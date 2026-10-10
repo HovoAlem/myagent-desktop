@@ -1,0 +1,22 @@
+{
+  "name": "myagent-desktop",
+  "productName": "MyAgent",
+  "version": "1.0.0",
+  "description": "MyAgent desktop app",
+  "author": "Oganes Alemsharyan",
+  "main": "main.js",
+  "scripts": { "start": "electron .", "dist": "electron-builder --publish always" },
+  "dependencies": { "electron-updater": "^6.3.9" },
+  "devDependencies": { "electron": "^33.2.0", "electron-builder": "^25.1.8" },
+  "build": {
+    "appId": "com.openmyagent.desktop",
+    "productName": "MyAgent",
+    "files": ["main.js", "preload.js", "build/icon.png", "build/tray.png"],
+    "directories": { "buildResources": "build" },
+    "publish": [{ "provider": "github", "owner": "HovoAlem", "repo": "myagent-desktop", "releaseType": "release" }],
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "build/icon.png", "artifactName": "MyAgent-Setup-${version}.${ext}" },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "createStartMenuShortcut": true, "shortcutName": "MyAgent" },
+    "mac": { "target": [{ "target": "dmg", "arch": ["universal"] }, { "target": "zip", "arch": ["universal"] }], "icon": "build/icon.png", "category": "public.app-category.productivity", "artifactName": "MyAgent-${version}-${arch}.${ext}", "identity": null,
+             "extendInfo": { "NSMicrophoneUsageDescription": "MyAgent uses the microphone for voice chat with your bots.", "NSCameraUsageDescription": "MyAgent can use the camera when you share a photo." } }
+  }
+}

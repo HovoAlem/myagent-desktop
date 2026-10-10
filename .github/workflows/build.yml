@@ -1,0 +1,37 @@
+name: Build desktop app
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: App icon
+        shell: bash
+        run: |
+          mkdir -p build
+          curl -fsSL https://openmyagent.com/icon-512.png -o build/icon.png
+          cp build/icon.png build/tray.png
+      - run: npm install
+      - name: Build and publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npx electron-builder --publish always
+      - uses: actions/upload-artifact@v4
+        with:
+          name: myagent-${{ matrix.os }}
+          path: |
+            dist/*.exe
+            dist/*.dmg
+          if-no-files-found: ignore
