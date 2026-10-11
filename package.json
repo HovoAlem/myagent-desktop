@@ -1,7 +1,7 @@
 {
   "name": "myagent-desktop",
   "productName": "MyAgent",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MyAgent desktop app",
   "author": "Oganes Alemsharyan",
   "main": "main.js",
@@ -14,9 +14,9 @@
     "files": ["main.js", "preload.js", "build/icon.png", "build/tray.png"],
     "directories": { "buildResources": "build" },
     "publish": [{ "provider": "github", "owner": "HovoAlem", "repo": "myagent-desktop", "releaseType": "release" }],
-    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "build/icon.png", "artifactName": "MyAgent-Setup-${version}.${ext}" },
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "build/icon.png", "artifactName": "MyAgent-Setup.${ext}" },
     "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "createStartMenuShortcut": true, "shortcutName": "MyAgent" },
-    "mac": { "target": [{ "target": "dmg", "arch": ["universal"] }, { "target": "zip", "arch": ["universal"] }], "icon": "build/icon.png", "category": "public.app-category.productivity", "artifactName": "MyAgent-${version}-${arch}.${ext}", "identity": null,
+    "mac": { "target": [{ "target": "dmg", "arch": ["universal"] }, { "target": "zip", "arch": ["universal"] }], "icon": "build/icon.png", "category": "public.app-category.productivity", "artifactName": "MyAgent-${arch}.${ext}", "identity": null,
              "extendInfo": { "NSMicrophoneUsageDescription": "MyAgent uses the microphone for voice chat with your bots.", "NSCameraUsageDescription": "MyAgent can use the camera when you share a photo." } }
   }
 }

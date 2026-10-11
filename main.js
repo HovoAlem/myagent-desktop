@@ -19,6 +19,19 @@ function create() {
     webPreferences: { preload: path.join(__dirname, 'preload.js'), partition: 'persist:myagent', contextIsolation: true, sandbox: true, spellcheck: true },
   });
   win.loadURL(HOME);
+  // right-click menu like a normal browser: Cut / Copy / Paste / Select all (+ spelling fixes) in text boxes, Copy on selected text
+  win.webContents.on('context-menu', (e, p) => {
+    const items = [];
+    (p.dictionarySuggestions || []).slice(0, 5).forEach(w => items.push({ label: w, click: () => win.webContents.replaceMisspelling(w) }));
+    if (items.length) items.push({ type: 'separator' });
+    if (p.isEditable) items.push({ role: 'undo', enabled: p.editFlags.canUndo }, { role: 'redo', enabled: p.editFlags.canRedo }, { type: 'separator' },
+      { role: 'cut', enabled: p.editFlags.canCut }, { role: 'copy', enabled: p.editFlags.canCopy }, { role: 'paste', enabled: p.editFlags.canPaste },
+      { role: 'pasteAndMatchStyle', label: 'Paste as plain text' }, { role: 'selectAll' });
+    else if (p.selectionText) items.push({ role: 'copy' });
+    if (p.linkURL) items.push({ type: 'separator' }, { label: 'Open link in browser', click: () => shell.openExternal(p.linkURL) }, { label: 'Copy link', click: () => require('electron').clipboard.writeText(p.linkURL) });
+    if (p.mediaType === 'image' && p.srcURL) items.push({ type: 'separator' }, { label: 'Copy image', click: () => win.webContents.copyImageAt(p.x, p.y) }, { label: 'Save image as…', click: () => win.webContents.downloadURL(p.srcURL) });
+    if (items.length) Menu.buildFromTemplate(items).popup({ window: win });
+  });
   // links to other sites open in the normal browser; MyAgent pages stay in the app
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith(HOME) || url.startsWith('blob:')) return { action: 'allow' };
